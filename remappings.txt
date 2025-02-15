@@ -1,0 +1,8 @@
+@core/=lib/core/contracts/
+@openzeppelin/=lib/openzeppelin-contracts/contracts/
+@governance/=lib/governance/contracts/
+@operator/=lib/operator/contracts/
+@permit2/=lib/permit2/src/
+@solady/=lib/solady/src/
+@uniswap/=lib/v4-periphery/src/
+@vault/=lib/vault/contracts/
