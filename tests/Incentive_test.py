@@ -65,8 +65,8 @@ def test_deployIncentive(chain, deployment, request, worker_id):
     with brownie.reverts('TagsOutOfOrder: ' + str(tag1) + ', ' + str(tag0)):
         incentiveDeployer.deploy(
             Incentive.bytecode + encode(
-                ['address', 'address', 'address', 'address', 'address', 'uint256', 'uint256', 'address', 'address', 'uint32', 'uint32'],
-                [nofeeswap.address, address0, address0, address0, root.address, tag1, tag0, other.address, rewardToken.address, startBlock, endBlock]
+                ['address', 'address', 'address', 'address', 'address', 'uint256', 'uint256', 'address', 'address', 'uint32', 'uint32', 'int256'],
+                [nofeeswap.address, address0, address0, address0, root.address, tag1, tag0, other.address, rewardToken.address, startBlock, endBlock, 1 << 128]
             ).hex(),
             {'from': root}
         )
@@ -74,8 +74,8 @@ def test_deployIncentive(chain, deployment, request, worker_id):
     with brownie.reverts('InvalidStartBlock: ' + str(chain[-1].number - 10) + ', ' + str(chain[-1].number + 1)):
         incentiveDeployer.deploy(
             Incentive.bytecode + encode(
-                ['address', 'address', 'address', 'address', 'address', 'uint256', 'uint256', 'address', 'address', 'uint32', 'uint32'],
-                [nofeeswap.address, address0, address0, address0, root.address, tag0, tag1, other.address, rewardToken.address, chain[-1].number - 10, endBlock]
+                ['address', 'address', 'address', 'address', 'address', 'uint256', 'uint256', 'address', 'address', 'uint32', 'uint32', 'int256'],
+                [nofeeswap.address, address0, address0, address0, root.address, tag0, tag1, other.address, rewardToken.address, chain[-1].number - 10, endBlock, 1 << 128]
             ).hex(),
             {'from': root}
         )
@@ -83,8 +83,8 @@ def test_deployIncentive(chain, deployment, request, worker_id):
     with brownie.reverts('InvalidEndBlock: ' + str(startBlock) + ', ' + str(startBlock)):
         incentiveDeployer.deploy(
             Incentive.bytecode + encode(
-                ['address', 'address', 'address', 'address', 'address', 'uint256', 'uint256', 'address', 'address', 'uint32', 'uint32'],
-                [nofeeswap.address, address0, address0, address0, root.address, tag0, tag1, other.address, rewardToken.address, startBlock, startBlock]
+                ['address', 'address', 'address', 'address', 'address', 'uint256', 'uint256', 'address', 'address', 'uint32', 'uint32', 'int256'],
+                [nofeeswap.address, address0, address0, address0, root.address, tag0, tag1, other.address, rewardToken.address, startBlock, startBlock, 1 << 128]
             ).hex(),
             {'from': root}
         )
@@ -101,6 +101,7 @@ def test_deployIncentive(chain, deployment, request, worker_id):
         rewardToken.address,
         startBlock,
         endBlock,
+        1 << 128,
         {'from': root}
     )
 
@@ -134,8 +135,8 @@ def test_initialize(chain, deployment, request, worker_id):
     deployer.create3(
         incentiveDeploymentSalt,
         Incentive.bytecode + encode(
-            ['address', 'address', 'address', 'address', 'address', 'uint256', 'uint256', 'address', 'address', 'uint32', 'uint32'],
-            [nofeeswap.address, address0, address0, address0, root.address, toInt(token0.address), toInt(token1.address), incentive, rewardToken.address, startBlock, endBlock]
+            ['address', 'address', 'address', 'address', 'address', 'uint256', 'uint256', 'address', 'address', 'uint32', 'uint32', 'int256'],
+            [nofeeswap.address, address0, address0, address0, root.address, toInt(token0.address), toInt(token1.address), incentive, rewardToken.address, startBlock, endBlock, 1 << 128]
         ).hex(),
         {'from': root}
     )
@@ -271,8 +272,8 @@ def test_modifyPosition(chain, deployment, request, worker_id):
     deployer.create3(
         incentiveDeploymentSalt,
         Incentive.bytecode + encode(
-            ['address', 'address', 'address', 'address', 'address', 'uint256', 'uint256', 'address', 'address', 'uint32', 'uint32'],
-            [nofeeswap.address, address0, address0, address0, root.address, toInt(token0.address), toInt(token1.address), incentive, rewardToken.address, startBlock, endBlock]
+            ['address', 'address', 'address', 'address', 'address', 'uint256', 'uint256', 'address', 'address', 'uint32', 'uint32', 'int256'],
+            [nofeeswap.address, address0, address0, address0, root.address, toInt(token0.address), toInt(token1.address), incentive, rewardToken.address, startBlock, endBlock, 1 << 128]
         ).hex(), 
         {'from': root}
     )
@@ -455,8 +456,8 @@ def test_modifyPositionWithIncentiveAsOperator(chain, deployment, request, worke
     deployer.create3(
         incentiveDeploymentSalt,
         Incentive.bytecode + encode(
-            ['address', 'address', 'address', 'address', 'address', 'uint256', 'uint256', 'address', 'address', 'uint32', 'uint32'],
-            [nofeeswap.address, address0, address0, address0, root.address, toInt(token0.address), toInt(token1.address), incentive, rewardToken.address, startBlock, endBlock]
+            ['address', 'address', 'address', 'address', 'address', 'uint256', 'uint256', 'address', 'address', 'uint32', 'uint32', 'int256'],
+            [nofeeswap.address, address0, address0, address0, root.address, toInt(token0.address), toInt(token1.address), incentive, rewardToken.address, startBlock, endBlock, 1 << 128]
         ).hex(), 
         {'from': root}
     )
@@ -611,8 +612,8 @@ def test_permit(chain, deployment, request, worker_id):
     deployer.create3(
         incentiveDeploymentSalt,
         Incentive.bytecode + encode(
-            ['address', 'address', 'address', 'address', 'address', 'uint256', 'uint256', 'address', 'address', 'uint32', 'uint32'],
-            [nofeeswap.address, address0, address0, address0, root.address, toInt(token0.address), toInt(token1.address), incentive, rewardToken.address, startBlock, endBlock]
+            ['address', 'address', 'address', 'address', 'address', 'uint256', 'uint256', 'address', 'address', 'uint32', 'uint32', 'int256'],
+            [nofeeswap.address, address0, address0, address0, root.address, toInt(token0.address), toInt(token1.address), incentive, rewardToken.address, startBlock, endBlock, 1 << 128]
         ).hex(), 
         {'from': root}
     )
@@ -714,8 +715,8 @@ def test_points(chain, deployment, request, worker_id):
     deployer.create3(
         incentiveDeploymentSalt,
         Incentive.bytecode + encode(
-            ['address', 'address', 'address', 'address', 'address', 'uint256', 'uint256', 'address', 'address', 'uint32', 'uint32'],
-            [nofeeswap.address, address0, address0, address0, root.address, toInt(token0.address), toInt(token1.address), root.address, rewardToken.address, startBlock, endBlock]
+            ['address', 'address', 'address', 'address', 'address', 'uint256', 'uint256', 'address', 'address', 'uint32', 'uint32', 'int256'],
+            [nofeeswap.address, address0, address0, address0, root.address, toInt(token0.address), toInt(token1.address), root.address, rewardToken.address, startBlock, endBlock, 1 << 128]
         ).hex(), 
         {'from': root}
     ) # startBlock - 49

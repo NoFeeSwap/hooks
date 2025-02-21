@@ -238,6 +238,7 @@ def test_incentivePoolFactory(deployment, request, worker_id):
         rewardToken.address,
         startBlock,
         endBlock,
+        1 << 128,
         {'from': root}
     )
 

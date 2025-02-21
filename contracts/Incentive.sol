@@ -110,6 +110,9 @@ contract Incentive is
   /// @inheritdoc IIncentive
   uint32 public immutable override endBlock;
 
+  /// @inheritdoc IIncentive
+  X111 public immutable override maxIncentiveGrowth;
+
   constructor(
     INofeeswap _nofeeswap,
     address _permit2,
@@ -121,7 +124,8 @@ contract Incentive is
     address _payMaster,
     INofee _rewardToken,
     uint32 _startBlock,
-    uint32 _endBlock
+    uint32 _endBlock,
+    X111 _maxIncentiveGrowth
   ) Operator(address(_nofeeswap), _permit2, _weth9, _quoter) {
     incentivePoolFactory = _incentivePoolFactory;
     require(_tag0 < _tag1, TagsOutOfOrder(_tag0, _tag1));
@@ -140,6 +144,7 @@ contract Incentive is
     );
     endBlock = _endBlock;
     incrementTokenId();
+    maxIncentiveGrowth = _maxIncentiveGrowth;
   }
 
   /// @inheritdoc IERC721Metadata
@@ -511,21 +516,25 @@ contract Incentive is
     // 'totalEvanescentPointsOwed' and 'lastActiveEvanescentPointsPerShare' are
     // updated.
     uint256 pointsPerShareIncrement;
-    unchecked {
-      pointsPerShareIncrement = (currentBlock - lastBlockAccounted) * (
-        geometricMean(
-          getIntegral0FromCalldata(),
-          getIntegral1FromCalldata()
-        ) * uint256(X111.unwrap(getGrowthFromCalldata()))
-      );
-      uint256 outgoingMax = uint256(X216.unwrap(getOutgoingMaxFromCalldata()));
-      uint256 twos = (0 - outgoingMax) & outgoingMax;
-      pointsPerShareIncrement = (
-        (
-          pointsPerShareIncrement - (pointsPerShareIncrement % outgoingMax)
-        ) / twos
-      ) * getOutgoingMaxModularInverseFromCalldata();
-      lastActiveEvanescentPointsPerShare += pointsPerShareIncrement;
+    if (getGrowthFromCalldata() <= maxIncentiveGrowth) {
+      unchecked {
+        pointsPerShareIncrement = (currentBlock - lastBlockAccounted) * (
+          geometricMean(
+            getIntegral0FromCalldata(),
+            getIntegral1FromCalldata()
+          ) * uint256(X111.unwrap(getGrowthFromCalldata()))
+        );
+        uint256 outgoingMax = uint256(
+          X216.unwrap(getOutgoingMaxFromCalldata())
+        );
+        uint256 twos = (0 - outgoingMax) & outgoingMax;
+        pointsPerShareIncrement = (
+          (
+            pointsPerShareIncrement - (pointsPerShareIncrement % outgoingMax)
+          ) / twos
+        ) * getOutgoingMaxModularInverseFromCalldata();
+        lastActiveEvanescentPointsPerShare += pointsPerShareIncrement;
+      }
     }
 
     // Here, 'lastActiveEvanescentPointsPerShare' may never overflow because,

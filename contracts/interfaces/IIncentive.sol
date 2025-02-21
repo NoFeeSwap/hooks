@@ -11,6 +11,7 @@ import {IHook} from "@core/interfaces/IHook.sol";
 import {IOperator} from "@operator/interfaces/IOperator.sol";
 import {Tag} from "@core/utilities/Tag.sol";
 import {X59} from "@core/utilities/X59.sol";
+import {X111} from "@core/utilities/X111.sol";
 import {IIncentivePoolFactory} from "./IIncentivePoolFactory.sol";
 
 /// @notice Interface for the Incentive hook contract.
@@ -88,6 +89,9 @@ interface IIncentive is
 
   /// @notice The end block of the incentive program.
   function endBlock() external returns (uint32);
+
+  /// @notice No interval with growth above this value is rewarded.
+  function maxIncentiveGrowth() external returns (X111);
 
   /// @notice Collects incentive rewards for LPs. It should be run by the NFT
   /// holder of the LP position.
